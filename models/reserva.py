@@ -4,6 +4,7 @@ from sqlalchemy.sql import func
 from sqlalchemy.dialects.mysql import TINYINT
 from sqlalchemy.orm import relationship
 from db import db
+from models.material import Material
 
 class Reserva(db.Model):
     tablename = "reservass"
@@ -11,13 +12,19 @@ class Reserva(db.Model):
     costo = Column(Integer)
     cantidad = Column(Integer)
     material = Column(Integer,ForeignKey('materiales.id'))
+    estado = Column(String(100))
 
-    def init(self, costo=None, cantidad=None, mID=None):
+    def __init__(self, costo=None, cantidad=None, mID=None):
         self.costo = costo
         self.cantidad = cantidad
         self.material = mID
+        self.estado = "iniciado"
 
-    def crear(costo, cantidad, mID):
-        material= Reserva(costo,cantidad,mID)
-        db.session.add(material)
+    def crear(cantidad, mID):
+        costoT = Material.buscarCosto(mID)
+        intCan = int(cantidad)
+        costoTe = costoT * intCan
+        reserva = Reserva(costoTe,cantidad,mID)
+        db.session.add(reserva)
         db.session.commit()
+        return reserva.id

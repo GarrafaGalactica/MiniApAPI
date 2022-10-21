@@ -50,11 +50,15 @@ def submit():
     if request.method == 'POST':
         chequeo = jwt.decode(request.form['cookie'], key, algorithms="HS256")
         if chequeo["Estatus"] == "ok":
-            id = Reserva.crear(request.form['costo'],request.form['cantidad'],request.form['id'])
-            result = {"reserva_id": id}
-            codigo = 200
+            if (request.form['cantidad'] == Material.buscarCantidad(request.form['id'])):
+                id = Reserva.crear(request.form['cantidad'],request.form['id'])
+                result = {"reserva_id": id}
+                codigo = 200
+            else:
+                result = {"error": "no hay cantidad suficiente"}
+                codigo = 400
         else:
-            result = {"errores": chequeo}
+            result = {"errores": "Not authorized"}
             codigo = 401
         #denuncia = type(denuncia)
         return jsonify(result), codigo

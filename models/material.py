@@ -25,6 +25,14 @@ class Material(db.Model):
         db.session.add(material)
         db.session.commit()
         return material.id
+
+    def buscarCosto(id):
+        material = Material.query.filter_by(id=id).first()
+        return material.costo
     
-    def buscar(self,nombre):
+    def buscarCantidad(id):
+        material = Material.query.filter_by(id=id).first()
+        return material.cantidad
+    
+    def buscar(self,nombre,cantidad):
         return db.select(["*"]).where(db._(self.materiales.columns.nombre == nombre))
