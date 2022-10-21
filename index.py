@@ -12,6 +12,7 @@ import jwt
 import db
 from config import config
 from models.material import Material
+from models.reserva import Reserva
 
 app = Flask(__name__)
 
@@ -49,7 +50,8 @@ def submit():
     if request.method == 'POST':
         chequeo = jwt.decode(request.form['cookie'], key, algorithms="HS256")
         if chequeo["Estatus"] == "ok":
-            result = {"Piola": "ok"}
+            id = Reserva.crear(request.form['costo'],request.form['cantidad'],request.form['id'])
+            result = {"reserva_id": id}
             codigo = 200
         else:
             result = {"errores": chequeo}

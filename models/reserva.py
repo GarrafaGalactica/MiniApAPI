@@ -6,20 +6,18 @@ from sqlalchemy.orm import relationship
 from db import db
 
 class Reserva(db.Model):
-    __tablename__ = "reservass"
+    tablename = "reservass"
     id = Column(Integer,primary_key=True)
-    nombre = Column(String(100))
     costo = Column(Integer)
     cantidad = Column(Integer)
-    empresa = Column(String(100))
+    material = Column(Integer,ForeignKey('materiales.id'))
 
-    def __init__(self, nombre=None, costo=None, cantidad=None, empresa=None):
-        self.nombre = nombre
+    def init(self, costo=None, cantidad=None, mID=None):
         self.costo = costo
         self.cantidad = cantidad
-        self.empresa = empresa
+        self.material = mID
 
-    def crear(nombre, costo, cantidad, empresa):
-        material= Reserva(nombre,costo,cantidad,empresa)
+    def crear(costo, cantidad, mID):
+        material= Reserva(costo,cantidad,mID)
         db.session.add(material)
         db.session.commit()
