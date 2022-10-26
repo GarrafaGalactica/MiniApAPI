@@ -50,7 +50,7 @@ def submit():
     if request.method == 'POST':
         chequeo = jwt.decode(request.form['cookie'], key, algorithms="HS256")
         if chequeo["Estatus"] == "ok":
-            if (request.form['cantidad'] == Material.buscarCantidad(request.form['id'])):
+            if (int(request.form['cantidad']) <= int(Material.buscarCantidad(request.form['id']))):
                 id = Reserva.crear(request.form['cantidad'],request.form['id'])
                 result = {"reserva_id": id}
                 codigo = 200

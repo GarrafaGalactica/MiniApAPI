@@ -1,6 +1,6 @@
 from typing import List
 from unittest import result
-from sqlalchemy import Table, Column, Integer, String, DateTime, ForeignKey, update
+from sqlalchemy import Table, Column, Integer, String, DateTime, ForeignKey, update, and_
 from sqlalchemy.sql import func
 from sqlalchemy.dialects.mysql import TINYINT
 from sqlalchemy.orm import relationship
@@ -34,5 +34,14 @@ class Material(db.Model):
         material = Material.query.filter_by(id=id).first()
         return material.cantidad
     
-    def buscar(self,nombre,cantidad):
-        return db.select(["*"]).where(db._(self.materiales.columns.nombre == nombre))
+    def buscar(nombre,cantidad):
+        #return db.select(["*"]).where(db.and_(self.materiales.columns.nombre == nombre,self.materiales.columns.cantidad <= cantidad))
+        if nombre == "":
+            material = Material.query.filter(Material.cantidad >= cantidad)
+        else:
+            material = Material.query.filter(and_(Material.nombre == nombre,Material.cantidad <= cantidad))
+        print(material.all())
+        print(material.all())
+        print(material.all())
+        print(material.all())
+        return material.all()
