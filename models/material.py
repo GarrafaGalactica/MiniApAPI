@@ -25,6 +25,16 @@ class Material(db.Model):
         db.session.add(material)
         db.session.commit()
         return material.id
+    
+    def aumentar(id,x):
+        material = Material.query.filter_by(id=id).first()
+        material.cantidad = material.cantidad + int(x)
+        db.session.commit()
+    
+    def restar(id,x):
+        material = Material.query.filter_by(id=id).first()
+        material.cantidad = material.cantidad - int(x)
+        db.session.commit()
 
     def buscarCosto(id):
         material = Material.query.filter_by(id=id).first()

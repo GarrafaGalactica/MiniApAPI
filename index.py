@@ -13,6 +13,7 @@ import db
 from config import config
 from models.material import Material
 from models.reserva import Reserva
+from models.usuario import Usuario
 
 app = Flask(__name__)
 
@@ -31,9 +32,9 @@ key = "123"
 @log_api.route("/", methods=('GET', 'POST'))
 def submit():
     if request.method == 'POST':
-        chequeo = request.form['rol']
-        if chequeo == "operador":
-            result = jwt.encode({"Estatus": "ok"}, key, algorithm="HS256")
+        user = Usuario.buscarPersona(request.form['nombre'])
+        if user.contra == request.form['contra']:
+            result = jwt.encode({"nombre": request.form['nombre'], "contra": request.form['contra']}, key, algorithm="HS256")
             codigo = 200
         else:
             result = {"errores": "Not authorized"}
@@ -49,9 +50,11 @@ key = "123"
 def submit():
     if request.method == 'POST':
         chequeo = jwt.decode(request.form['cookie'], key, algorithms="HS256")
-        if chequeo["Estatus"] == "ok":
+        user = Usuario.buscarPersona(chequeo['nombre'])
+        if user.contra == chequeo['contra']:
             if (int(request.form['cantidad']) <= int(Material.buscarCantidad(request.form['id']))):
                 id = Reserva.crear(request.form['cantidad'],request.form['id'])
+                Material.restar(request.form['id'], request.form['cantidad'])
                 result = {"reserva_id": id}
                 codigo = 200
             else:
@@ -76,6 +79,19 @@ def submit():
     codigo = 404
     return jsonify(result), codigo
 
+crearu_api = Blueprint("crearu", __name__, url_prefix="/crearu")
+
+@crearu_api.route("/", methods=('GET', 'POST'))
+def submit():
+    if request.method == 'POST':
+        id = Usuario.crear(request.form['nombre'],request.form['contra'])
+        result = {"Persona": id}
+        codigo = 201
+        return jsonify(result), codigo
+    result = {"Usuario": "es post no get"}
+    codigo = 404
+    return jsonify(result), codigo
+
 db.init_app(app)
 
 api = Blueprint("api", __name__, url_prefix="/api")
@@ -83,6 +99,7 @@ api.register_blueprint(materiales_api)
 api.register_blueprint(log_api)
 api.register_blueprint(reserva_api)
 api.register_blueprint(crearm_api)
+api.register_blueprint(crearu_api)
 
 app.register_blueprint(api)
 
