@@ -15,7 +15,7 @@ def index():
     while i < len(lista):
         print(type(lista[i]))
         variable = lista[i]
-        aux.append({"Nombre": variable.nombre,"Costo": variable.costo,"Cantidad": variable.cantidad,"Empresa": variable.empresa})
+        aux.append({"Nombre": variable.nombre,"Costo": variable.costo,"Cantidad": variable.cantidad,"Empresa": variable.empresa,"Id": variable.id})
         i = i + 1
     x = {
         "materiales": [

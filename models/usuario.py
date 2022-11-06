@@ -25,3 +25,6 @@ class Usuario(db.Model):
     def buscarPersona(nombre):
         user = Usuario.query.filter_by(nombre=nombre).first()
         return user
+    
+    def listar():
+        return Usuario.query.all()

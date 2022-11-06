@@ -92,6 +92,40 @@ def submit():
     codigo = 404
     return jsonify(result), codigo
 
+aumentarm_api = Blueprint("aumentarm", __name__, url_prefix="/aumentarm")
+
+@aumentarm_api.route("/", methods=('GET', 'POST'))
+def submit():
+    if request.method == 'POST':
+        Material.aumentar(request.form['id'],request.form['cantidad'])
+        result = {"Material": "piola"}
+        codigo = 201
+        return jsonify(result), codigo
+    result = {"Material": "es post no get"}
+    codigo = 404
+    return jsonify(result), codigo
+
+listaru_api = Blueprint("listaru", __name__, url_prefix="/listaru")
+
+
+@listaru_api.get("/")
+def index():
+    lista = Usuario.listar()
+    aux =[]
+    print(type(lista[0]))
+    i = 0;
+    while i < len(lista):
+        print(type(lista[i]))
+        variable = lista[i]
+        aux.append({"Nombre": variable.nombre,"Contra": variable.contra})
+        i = i + 1
+    x = {
+        "usuarios": [
+            aux
+        ]
+        }
+    return jsonify(x)
+
 db.init_app(app)
 
 api = Blueprint("api", __name__, url_prefix="/api")
@@ -100,6 +134,8 @@ api.register_blueprint(log_api)
 api.register_blueprint(reserva_api)
 api.register_blueprint(crearm_api)
 api.register_blueprint(crearu_api)
+api.register_blueprint(aumentarm_api)
+api.register_blueprint(listaru_api)
 
 app.register_blueprint(api)
 
