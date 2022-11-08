@@ -28,3 +28,25 @@ class Reserva(db.Model):
         db.session.add(reserva)
         db.session.commit()
         return reserva.id
+
+    def listar():
+        return Reserva.query.all()
+    
+    def buscarReserva(id):
+        reserva = Reserva.query.filter_by(id=id).first()
+        return reserva
+    
+    def retrasar(id):
+        material = Reserva.query.filter_by(id=id).first()
+        material.estado = "retrasado"
+        db.session.commit()
+    
+    def finalizar(id):
+        material = Reserva.query.filter_by(id=id).first()
+        material.estado = "finalizado"
+        db.session.commit()
+    
+    def cancelar(id):
+        material = Reserva.query.filter_by(id=id).first()
+        material.estado = "cancelado"
+        db.session.commit()

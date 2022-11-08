@@ -7,6 +7,7 @@ from flask_sqlalchemy import SQLAlchemy
 from oauthlib.oauth2 import WebApplicationClient
 from flask_cors import CORS
 from materiales import materiales_api
+from estados import rcancelar_api, rfinalizar_api, rretrasar_api
 import json
 import jwt
 import db
@@ -107,7 +108,6 @@ def submit():
 
 listaru_api = Blueprint("listaru", __name__, url_prefix="/listaru")
 
-
 @listaru_api.get("/")
 def index():
     lista = Usuario.listar()
@@ -126,6 +126,26 @@ def index():
         }
     return jsonify(x)
 
+listarr_api = Blueprint("listarr", __name__, url_prefix="/listarr")
+
+@listarr_api.get("/")
+def index():
+    lista = Reserva.listar()
+    aux =[]
+    print(type(lista[0]))
+    i = 0;
+    while i < len(lista):
+        print(type(lista[i]))
+        variable = lista[i]
+        aux.append({"id": variable.id,"Costo": variable.costo,"Cantidad": variable.cantidad,"Material": variable.material, "Estado": variable.estado})
+        i = i + 1
+    x = {
+        "reservas": [
+            aux
+        ]
+        }
+    return jsonify(x)
+
 db.init_app(app)
 
 api = Blueprint("api", __name__, url_prefix="/api")
@@ -136,6 +156,10 @@ api.register_blueprint(crearm_api)
 api.register_blueprint(crearu_api)
 api.register_blueprint(aumentarm_api)
 api.register_blueprint(listaru_api)
+api.register_blueprint(listarr_api)
+api.register_blueprint(rcancelar_api)
+api.register_blueprint(rretrasar_api)
+api.register_blueprint(rfinalizar_api)
 
 app.register_blueprint(api)
 
