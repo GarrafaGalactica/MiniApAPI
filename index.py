@@ -25,6 +25,7 @@ def home():
 environment="development"
 env = environ.get("FLASK_ENV", environment)
 app.config.from_object(config[env])
+app.config['OPENAPI_VERSION'] = '3.0.2'
 
 log_api = Blueprint("log", __name__, url_prefix="/log")
 key = "123"
