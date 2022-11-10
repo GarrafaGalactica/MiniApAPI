@@ -5,7 +5,7 @@ from sqlalchemy import Table, Column, Integer, String, DateTime, ForeignKey, upd
 import handler
 from flask_sqlalchemy import SQLAlchemy
 from oauthlib.oauth2 import WebApplicationClient
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 from materiales import materiales_api
 from estados import rcancelar_api, rfinalizar_api, rretrasar_api
 import json
@@ -17,6 +17,9 @@ from models.reserva import Reserva
 from models.usuario import Usuario
 
 app = Flask(__name__)
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
+
 
 @app.route("/")
 def home():
@@ -25,7 +28,6 @@ def home():
 environment="development"
 env = environ.get("FLASK_ENV", environment)
 app.config.from_object(config[env])
-app.config['OPENAPI_VERSION'] = '3.0.2'
 
 log_api = Blueprint("log", __name__, url_prefix="/log")
 key = "123"

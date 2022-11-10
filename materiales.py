@@ -2,11 +2,13 @@ from flask import jsonify, Blueprint, request, abort
 #from app.db import connection
 import json
 from models.material import Material
+from flask_cors import CORS, cross_origin
 
 materiales_api = Blueprint("materiales", __name__, url_prefix="/materiales")
 
 
 @materiales_api.get("/")
+@cross_origin()
 def index():
     lista = Material.buscar("",0)
     aux =[]
