@@ -34,6 +34,7 @@ key = "123"
 
 
 @log_api.route("/", methods=('GET', 'POST'))
+@cross_origin()
 def submit():
     if request.method == 'POST':
         user = Usuario.buscarPersona(request.form['nombre'])
@@ -51,15 +52,21 @@ key = "123"
 
 
 @reserva_api.route("/", methods=('GET', 'POST'))
+@cross_origin()
 def submit():
     if request.method == 'POST':
-        chequeo = jwt.decode(request.form['cookie'], key, algorithms="HS256")
+        options = {"verify_signature": False}
+        print(request.form['cookie'])
+        print("XXXXXXXXXXXXXXXXXXXXXXX")
+        chequeo = jwt.decode(str(request.form['cookie']), key, algorithms="HS256", options=options)
+        print("XXXXXXXXXXXXXXXXXXXXXXX")
+
         user = Usuario.buscarPersona(chequeo['nombre'])
         if user.contra == chequeo['contra']:
             if (int(request.form['cantidad']) <= int(Material.buscarCantidad(request.form['id']))):
                 id = Reserva.crear(request.form['cantidad'],request.form['id'])
                 Material.restar(request.form['id'], request.form['cantidad'])
-                result = {"reserva_id": id}
+                result = id
                 codigo = 200
             else:
                 result = {"error": "no hay cantidad suficiente"}
@@ -73,6 +80,7 @@ def submit():
 crearm_api = Blueprint("crearm", __name__, url_prefix="/crearm")
 
 @crearm_api.route("/", methods=('GET', 'POST'))
+@cross_origin()
 def submit():
     if request.method == 'POST':
         id = Material.crear(request.form['nombre'],request.form['costo'],request.form['cantidad'],request.form['empresa'])
@@ -86,6 +94,7 @@ def submit():
 crearu_api = Blueprint("crearu", __name__, url_prefix="/crearu")
 
 @crearu_api.route("/", methods=('GET', 'POST'))
+@cross_origin()
 def submit():
     if request.method == 'POST':
         id = Usuario.crear(request.form['nombre'],request.form['contra'])
@@ -99,6 +108,7 @@ def submit():
 aumentarm_api = Blueprint("aumentarm", __name__, url_prefix="/aumentarm")
 
 @aumentarm_api.route("/", methods=('GET', 'POST'))
+@cross_origin()
 def submit():
     if request.method == 'POST':
         Material.aumentar(request.form['id'],request.form['cantidad'])
@@ -112,6 +122,7 @@ def submit():
 listaru_api = Blueprint("listaru", __name__, url_prefix="/listaru")
 
 @listaru_api.get("/")
+@cross_origin()
 def index():
     lista = Usuario.listar()
     aux =[]
@@ -132,6 +143,7 @@ def index():
 listarr_api = Blueprint("listarr", __name__, url_prefix="/listarr")
 
 @listarr_api.get("/")
+@cross_origin()
 def index():
     lista = Reserva.listar()
     aux =[]
