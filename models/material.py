@@ -44,6 +44,9 @@ class Material(db.Model):
         material = Material.query.filter_by(id=id).first()
         return material.cantidad
     
+    def buscarMaterial(id):
+        return Material.query.filter_by(id=id).first()
+
     def buscar(nombre,cantidad):
         #return db.select(["*"]).where(db.and_(self.materiales.columns.nombre == nombre,self.materiales.columns.cantidad <= cantidad))
         if nombre == "":

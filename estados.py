@@ -41,7 +41,7 @@ rfinalizar_api = Blueprint("rfinalizar", __name__, url_prefix="/rfinalizar")
 @cross_origin()
 def submit():
     if request.method == 'POST':
-        Reserva.cancelar(request.form['id'])
+        Reserva.finalizar(request.form['id'])
         result = {"Reserva": request.form['id']}
         codigo = 201
         return jsonify(result), codigo

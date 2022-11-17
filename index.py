@@ -1,5 +1,5 @@
 from os import path, environ, urandom
-from flask import Flask, render_template, g, Blueprint, sessions, jsonify, request
+from flask import Flask, render_template, g, Blueprint, sessions, jsonify, request, abort
 #from app.resources import auth
 from sqlalchemy import Table, Column, Integer, String, DateTime, ForeignKey, update
 import handler
@@ -64,7 +64,7 @@ def submit():
         user = Usuario.buscarPersona(chequeo['nombre'])
         if user.contra == chequeo['contra']:
             if (int(request.form['cantidad']) <= int(Material.buscarCantidad(request.form['id']))):
-                id = Reserva.crear(request.form['cantidad'],request.form['id'])
+                id = Reserva.crear(request.form['cantidad'],request.form['id'], request.form['fecha'])
                 Material.restar(request.form['id'], request.form['cantidad'])
                 result = id
                 codigo = 200
@@ -160,6 +160,15 @@ def index():
         ]
         }
     return jsonify(x)
+
+@listarr_api.get("/<int:id>/")
+def individual(id):
+    reserva_row = Reserva.buscarReserva(id)
+    material = Material.buscarMaterial(reserva_row.material)
+    if reserva_row:
+        return jsonify({"Id": reserva_row.id, "Material": material.nombre, "Cantidad": reserva_row.cantidad, "Fecha": reserva_row.fecha_estimada})
+    else:
+        abort(404)
 
 db.init_app(app)
 

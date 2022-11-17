@@ -5,6 +5,7 @@ from sqlalchemy.dialects.mysql import TINYINT
 from sqlalchemy.orm import relationship
 from db import db
 from models.material import Material
+from datetime import date
 
 class Reserva(db.Model):
     tablename = "reservass"
@@ -13,18 +14,22 @@ class Reserva(db.Model):
     cantidad = Column(Integer)
     material = Column(Integer,ForeignKey('materiales.id'))
     estado = Column(String(100))
+    fecha_estimada = Column(DateTime)
+    fecha_entrega = Column(DateTime)
+    time_created = Column(DateTime(timezone=True), server_default=func.now())
 
-    def __init__(self, costo=None, cantidad=None, mID=None):
+    def __init__(self, costo=None, cantidad=None, mID=None, fecha = None):
         self.costo = costo
         self.cantidad = cantidad
         self.material = mID
         self.estado = "iniciado"
+        self.fecha_estimada = fecha
 
-    def crear(cantidad, mID):
+    def crear(cantidad, mID, fecha):
         costoT = Material.buscarCosto(mID)
         intCan = int(cantidad)
         costoTe = costoT * intCan
-        reserva = Reserva(costoTe,cantidad,mID)
+        reserva = Reserva(costoTe,cantidad,mID, fecha)
         db.session.add(reserva)
         db.session.commit()
         return reserva.id
@@ -42,8 +47,9 @@ class Reserva(db.Model):
         db.session.commit()
     
     def finalizar(id):
-        material = Reserva.query.filter_by(id=id).first()
-        material.estado = "finalizado"
+        reserva = Reserva.query.filter_by(id=id).first()
+        reserva.estado = "finalizado"
+        reserva.fecha_entrega = date.today()
         db.session.commit()
     
     def cancelar(id):

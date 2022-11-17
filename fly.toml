@@ -1,4 +1,4 @@
-# fly.toml file generated for dssdapi on 2022-10-20T19:04:19-03:00
+# fly.toml file generated for dssdapi on 2022-11-12T17:02:16-03:00
 
 app = "dssdapi"
 kill_signal = "SIGINT"
