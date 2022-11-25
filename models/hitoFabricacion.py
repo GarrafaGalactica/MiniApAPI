@@ -25,5 +25,10 @@ class HitoFabricantes(db.Model):
     def listar():
         return HitoFabricantes.query.all()
     
-    def buscarFabricante(id):
-        return HitoFabricantes.query.filter_by(id=id).first()
+    def buscarHitoFabricante(reserva):
+        return HitoFabricantes.query.filter_by(reserva=reserva).first()
+    
+    def eliminar(id):
+        hito = HitoFabricantes.query.filter_by(id = id).first()
+        db.session.delete(hito)
+        db.session.commit()

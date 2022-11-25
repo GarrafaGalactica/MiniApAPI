@@ -5,11 +5,12 @@ from sqlalchemy.sql import func
 from sqlalchemy.dialects.mysql import TINYINT
 from sqlalchemy.orm import relationship
 from db import db
+from models.reserva import Reserva
 
 class HitoMateriales(db.Model):
     __tablename__ = "hitosMateriales"
     id = Column(Integer,primary_key=True)
-    reserva = Column(Integer,ForeignKey('reservass.id'))
+    reserva = Column(Integer,ForeignKey('reserva.id'))
     descripcion = Column(String(100))
 
     def __init__(self, descripcion=None, reserva=None):
@@ -25,5 +26,10 @@ class HitoMateriales(db.Model):
     def listar():
         return HitoMateriales.query.all()
     
-    def buscarFabricante(id):
-        return HitoMateriales.query.filter_by(id=id).first()
+    def buscarHitoMateriales(reserva):
+        return HitoMateriales.query.filter_by(reserva=reserva).first()
+    
+    def eliminar(id):
+        hito = HitoMateriales.query.filter_by(id = id).first()
+        db.session.delete(hito)
+        db.session.commit()

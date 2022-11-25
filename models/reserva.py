@@ -56,3 +56,8 @@ class Reserva(db.Model):
         material = Reserva.query.filter_by(id=id).first()
         material.estado = "cancelado"
         db.session.commit()
+    
+    def actualizarFecha(id, fecha):
+        reserva = Reserva.query.filter_by(id=id).first()
+        reserva.fecha_estimada = fecha
+        db.session.commit()

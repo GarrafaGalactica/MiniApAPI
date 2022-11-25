@@ -8,6 +8,9 @@ from oauthlib.oauth2 import WebApplicationClient
 from flask_cors import CORS, cross_origin
 from materiales import materiales_api
 from estados import rcancelar_api, rfinalizar_api, rretrasar_api
+from fabricacion import crearf_api, listarf_api
+from reservaF import reservarf_api, listarrf_api, cambiarf_api
+from hitos import *
 import json
 import jwt
 import db
@@ -152,7 +155,7 @@ def index():
     while i < len(lista):
         print(type(lista[i]))
         variable = lista[i]
-        aux.append({"id": variable.id,"Costo": variable.costo,"Cantidad": variable.cantidad,"Material": variable.material, "Estado": variable.estado})
+        aux.append({"id": variable.id,"Costo": variable.costo,"Cantidad": variable.cantidad,"Material": variable.material, "Estado": variable.estado, "Fecha estimada": variable.fecha_estimada})
         i = i + 1
     x = {
         "reservas": [
@@ -170,6 +173,19 @@ def individual(id):
     else:
         abort(404)
 
+cambiarm_api = Blueprint("cambiarm", __name__, url_prefix="/cambiarm")
+
+@cambiarm_api.route("/<int:id>/",methods=('GET', 'POST'))
+def submit(id):
+    if request.method == 'POST':
+        Reserva.actualizarFecha(id,request.form['fecha'])
+        result = {"Reserva": "piola"}
+        codigo = 201
+        return jsonify(result), codigo
+    result = {"Reserva": "es post no get"}
+    codigo = 404
+    return jsonify(result), codigo
+
 db.init_app(app)
 
 api = Blueprint("api", __name__, url_prefix="/api")
@@ -184,6 +200,24 @@ api.register_blueprint(listarr_api)
 api.register_blueprint(rcancelar_api)
 api.register_blueprint(rretrasar_api)
 api.register_blueprint(rfinalizar_api)
+api.register_blueprint(cambiarm_api)
+api.register_blueprint(crearf_api)
+api.register_blueprint(listarf_api)
+api.register_blueprint(reservarf_api)
+api.register_blueprint(listarrf_api)
+api.register_blueprint(cambiarf_api)
+
+api.register_blueprint(buscarhm_api)
+api.register_blueprint(buscarhf_api)
+
+api.register_blueprint(hitofe1_api)
+api.register_blueprint(hitofe2_api)
+api.register_blueprint(hitofe3_api)
+
+api.register_blueprint(hitome1_api)
+api.register_blueprint(hitome2_api)
+api.register_blueprint(hitome3_api)
+
 
 app.register_blueprint(api)
 

@@ -12,13 +12,13 @@ materiales_api = Blueprint("materiales", __name__, url_prefix="/materiales")
 def index():
     lista = Material.buscar("",0)
     aux =[]
-    print(type(lista[0]))
     i = 0;
-    while i < len(lista):
-        print(type(lista[i]))
-        variable = lista[i]
-        aux.append({"Nombre": variable.nombre,"Costo": variable.costo,"Cantidad": variable.cantidad,"Empresa": variable.empresa,"Id": variable.id})
-        i = i + 1
+    if lista:
+        while i < len(lista):
+            print(type(lista[i]))
+            variable = lista[i]
+            aux.append({"Nombre": variable.nombre,"Costo": variable.costo,"Cantidad": variable.cantidad,"Empresa": variable.empresa,"Id": variable.id})
+            i = i + 1
     x = {
         "materiales": [
             aux

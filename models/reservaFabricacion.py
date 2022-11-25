@@ -16,13 +16,14 @@ class ReservaFabricacion(db.Model):
     fecha_entrega = Column(DateTime)
     estado = Column(String(100))
 
-    def __init__(self, fabricante=None, fecha_estimada=None):
+    def __init__(self, fabricante=None, fechaI=None, fechaF=None):
         self.fabricante = fabricante
-        self.fecha_estimada = fecha_estimada
-        self.estado = "fabricando"
+        self.fecha_inicio = fechaI
+        self.fecha_final = fechaF
+        self.estado = "reservado"
 
-    def crear(fabricante, fecha):
-        reserva= ReservaFabricacion(fabricante,fecha)
+    def crear(fabricante, fechaI, fechaF):
+        reserva= ReservaFabricacion(fabricante,fechaI, fechaF)
         db.session.add(reserva)
         db.session.commit()
         return reserva.id
@@ -43,3 +44,22 @@ class ReservaFabricacion(db.Model):
 
     def buscarReserva(id):
         return ReservaFabricacion.query.filter_by(id=id).first()
+    
+    def libre(f1, f2, fabricante):
+        libre = True
+        if ReservaFabricacion.query.filter(db.and_(ReservaFabricacion.fecha_inicio <= f1, ReservaFabricacion.fecha_final >= f1, ReservaFabricacion.fabricante == fabricante)).first():
+            print(1)
+            libre = False
+        if ReservaFabricacion.query.filter(db.and_(ReservaFabricacion.fecha_inicio <= f2, ReservaFabricacion.fecha_final >= f2, ReservaFabricacion.fabricante == fabricante)).first():
+            print(2)
+            libre = False
+        if ReservaFabricacion.query.filter(db.and_(ReservaFabricacion.fecha_inicio >= f1, ReservaFabricacion.fecha_final <= f2, ReservaFabricacion.fabricante == fabricante)).first():
+            print(3)
+            libre = False
+        return libre
+    
+    def actualizarFecha(id, f1,f2):
+        reserva = ReservaFabricacion.query.filter_by(id=id).first()
+        reserva.fecha_inicio = f1
+        reserva.fecha_final = f2
+        db.session.commit()
