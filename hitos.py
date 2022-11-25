@@ -7,7 +7,7 @@ from flask_cors import CORS, cross_origin
 
 buscarhm_api = Blueprint("buscarhm", __name__, url_prefix="/buscarhm")
 
-@buscarhm_api.route("/")
+@buscarhm_api.route("/",  methods=('GET', 'POST'))
 @cross_origin()
 def submit():
     hito = HitoMateriales.buscarHitoMateriales(request.form['reserva'])
@@ -24,7 +24,7 @@ def submit():
 
 buscarhf_api = Blueprint("buscarhf", __name__, url_prefix="/buscarhf")
 
-@buscarhf_api.route("/")
+@buscarhf_api.route("/",methods=('GET', 'POST'))
 @cross_origin()
 def submit():
     hito = HitoFabricantes.buscarHitoFabricante(request.form['reserva'])
