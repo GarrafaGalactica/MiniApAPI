@@ -63,3 +63,7 @@ class ReservaFabricacion(db.Model):
         reserva.fecha_inicio = f1
         reserva.fecha_final = f2
         db.session.commit()
+    
+    def borrarTodo():
+        ReservaFabricacion.query.delete()
+        db.session.commit()

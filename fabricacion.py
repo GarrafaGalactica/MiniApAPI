@@ -49,4 +49,19 @@ def individual(id):
         return jsonify({"Id": fabricante.id, "Nombre": fabricante.nombre, "Codigo": fabricante.codigo})
     else:
         abort(404)
+    
+borrarf_api = Blueprint("borrarf", __name__, url_prefix="/borrarf")
+
+@borrarf_api.route("/", methods=('GET', 'POST'))
+@cross_origin()
+def submit():
+    print(request.method)
+    if request.method == 'POST':
+        Fabricante.borrarTodo()
+        result = {"Fabricante": "todo borrado"}
+        codigo = 200
+        return jsonify(result), codigo
+    result = {"Fabricante": "es post no get para borrar"}
+    codigo = 404
+    return jsonify(result), codigo
 

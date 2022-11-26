@@ -27,3 +27,7 @@ class Fabricante(db.Model):
     
     def buscarFabricante(id):
         return Fabricante.query.filter_by(id=id).first()
+    
+    def borrarTodo():
+        Fabricante.query.delete()
+        db.session.commit()

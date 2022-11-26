@@ -8,8 +8,8 @@ from oauthlib.oauth2 import WebApplicationClient
 from flask_cors import CORS, cross_origin
 from materiales import materiales_api
 from estados import rcancelar_api, rfinalizar_api, rretrasar_api
-from fabricacion import crearf_api, listarf_api
-from reservaF import reservarf_api, listarrf_api, cambiarf_api
+from fabricacion import crearf_api, listarf_api, borrarf_api
+from reservaF import reservarf_api, listarrf_api, cambiarf_api, borrarrf_api
 from hitos import *
 import json
 import jwt
@@ -150,7 +150,6 @@ listarr_api = Blueprint("listarr", __name__, url_prefix="/listarr")
 def index():
     lista = Reserva.listar()
     aux =[]
-    print(type(lista[0]))
     i = 0;
     while i < len(lista):
         print(type(lista[i]))
@@ -186,6 +185,21 @@ def submit(id):
     codigo = 404
     return jsonify(result), codigo
 
+borrarrm_api = Blueprint("borrarrm", __name__, url_prefix="/borrarrm")
+
+@borrarrm_api.route("/", methods=('GET', 'POST'))
+@cross_origin()
+def submit():
+    print(request.method)
+    if request.method == 'POST':
+        Reserva.borrarTodo()
+        result = {"Reserva": "todo borrado"}
+        codigo = 200
+        return jsonify(result), codigo
+    result = {"Reserva": "es post no get para borrar"}
+    codigo = 404
+    return jsonify(result), codigo
+
 db.init_app(app)
 
 api = Blueprint("api", __name__, url_prefix="/api")
@@ -206,14 +220,20 @@ api.register_blueprint(listarf_api)
 api.register_blueprint(reservarf_api)
 api.register_blueprint(listarrf_api)
 api.register_blueprint(cambiarf_api)
+api.register_blueprint(borrarrf_api)
+api.register_blueprint(borrarrm_api)
+api.register_blueprint(borrarf_api)
 
+#Buscar Hitos
 api.register_blueprint(buscarhm_api)
 api.register_blueprint(buscarhf_api)
 
+#Agregar hitos de fabricacion
 api.register_blueprint(hitofe1_api)
 api.register_blueprint(hitofe2_api)
 api.register_blueprint(hitofe3_api)
 
+#Agregar hitos de materiales
 api.register_blueprint(hitome1_api)
 api.register_blueprint(hitome2_api)
 api.register_blueprint(hitome3_api)

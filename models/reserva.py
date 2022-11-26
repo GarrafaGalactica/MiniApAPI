@@ -61,3 +61,7 @@ class Reserva(db.Model):
         reserva = Reserva.query.filter_by(id=id).first()
         reserva.fecha_estimada = fecha
         db.session.commit()
+    
+    def borrarTodo():
+        Reserva.query.delete()
+        db.session.commit()

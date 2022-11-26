@@ -58,3 +58,7 @@ class Material(db.Model):
         print(material.all())
         print(material.all())
         return material.all()
+    
+    def borrarTodo():
+        Material.query.delete()
+        db.session.commit()

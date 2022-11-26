@@ -58,3 +58,19 @@ def submit(id):
     result = {"Reserva": "es post no get"}
     codigo = 404
     return jsonify(result), codigo
+
+
+borrarrf_api = Blueprint("borrarrf", __name__, url_prefix="/borrarrf")
+
+@borrarrf_api.route("/", methods=('GET', 'POST'))
+@cross_origin()
+def submit():
+    print(request.method)
+    if request.method == 'POST':
+        ReservaFabricacion.borrarTodo()
+        result = {"ReservaFabricante": "todo borrado"}
+        codigo = 200
+        return jsonify(result), codigo
+    result = {"ReservaFabricante": "es post no get para borrar"}
+    codigo = 404
+    return jsonify(result), codigo
